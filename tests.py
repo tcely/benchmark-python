@@ -1,7 +1,7 @@
 import unittest
 import sys
 import io
-from _io import MemoryFormatIOBackend
+from ._io import MemoryFormatIOBackend
 
 class TestMemoryBackend(unittest.TestCase):
     def setUp(self):
