@@ -30,5 +30,8 @@ jobs:
       - name: Run Unit Tests
         run: python tests.py
 
+      - name: Benchmark `getvalue()`
+        run: env ONLY_GETVALUE=True python memoryview.py
+
       - name: Run MemoryView Benchmark
         run: python memoryview.py
