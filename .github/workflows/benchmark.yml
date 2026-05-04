@@ -28,10 +28,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Run Unit Tests
-        run: python tests.py
-
-      - name: Benchmark `getvalue()`
-        run: env ONLY_GETVALUE=True python memoryview.py
+        run: env ONLY_GETVALUE=True python tests.py
 
       - name: Run MemoryView Benchmark
         run: python memoryview.py
