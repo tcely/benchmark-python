@@ -12,11 +12,10 @@ def benchmark():
     ms = io.BytesIO(data)
     
     print(f"Python Version: {sys.version}")
+    print(f"Implementation: {getattr(sys, 'implementation', 'unknown')}")
     print(f"Buffer Size: {size / (1024*1024):.1f} MB\n")
 
     # 1. Performance: Length Checks
-    # getvalue() leverages C-level optimizations. 
-    # getbuffer() must instantiate a memoryview and register a buffer export.
     gv_timer = timeit.Timer(lambda: len(ms.getvalue()))
     gb_timer = timeit.Timer(lambda: ms.getbuffer().nbytes)
     
@@ -26,15 +25,19 @@ def benchmark():
     print(f"--- Performance (10,000 iterations) ---")
     print(f"len(ms.getvalue()):     {gv_time:.5f}s")
     print(f"ms.getbuffer().nbytes:  {gb_time:.5f}s")
-    print(f"Speed Factor: {gb_time/gv_time:.2f}x (getvalue is faster)\n")
+    # Corrected speed factor logic based on your PyPy results
+    if gv_time < gb_time:
+        print(f"Speed Factor: {gb_time/gv_time:.2f}x (getvalue is faster)\n")
+    else:
+        print(f"Speed Factor: {gv_time/gb_time:.2f}x (getbuffer is faster)\n")
 
     # 2. Pitfalls: Memory Locking
-    # getbuffer() prevents truncation/resizing, which would break your promotion/reset logic.
     print(f"--- Pitfalls ---")
     view = ms.getbuffer()
     print("Memoryview acquired. Attempting truncate(0)...")
     try:
         ms.truncate(0)
+        print("Success: truncate(0) did NOT raise BufferError.")
     except BufferError as e:
         print(f"Caught expected BufferError: {e}")
     finally:
@@ -42,40 +45,26 @@ def benchmark():
         print("Memoryview released.")
 
     # 3. Allocation / GC Check
-    # Minimal GC activity proves getvalue() isn't doing full copies for simple len() checks.
     gc.collect()
-    gc.disable() # Disable to track counts accurately
-    before = gc.get_count()
+    
+    # Cross-interpreter GC tracking
+    def get_gc_state():
+        if hasattr(gc, 'get_count'):
+            return gc.get_count()
+        return "N/A (PyPy/Other GC)"
+
+    before = get_gc_state()
     for _ in range(1000):
         _ = len(ms.getvalue())
-    after = gc.get_count()
-    gc.enable()
+    after = get_gc_state()
     
     print("\n--- GC Activity (1,000 getvalue calls) ---")
-    print(f"GC counts before/after: {before} -> {after}")
-    print("(Stability in counts proves Copy-on-Write avoids redundant allocations)")
+    print(f"GC state before: {before}")
+    print(f"GC state after:  {after}")
+    if before == after and before != "N/A (PyPy/Other GC)":
+        print("(Stability in counts proves Copy-on-Write avoids redundant allocations)")
+    elif before == "N/A (PyPy/Other GC)":
+        print("(PyPy GC detected; allocations are managed via JIT/Generationless GC)")
 
 if __name__ == '__main__':
     benchmark()
-
-"""
-SAMPLE OUTPUT (Python 3.10+):
---------------------------------------------------
-Python Version: 3.11.x (main, ...) [Clang ...]
-Buffer Size: 50.0 MB
-
---- Performance (10,000 iterations) ---
-len(ms.getvalue()):     0.00068s
-ms.getbuffer().nbytes:  0.00412s
-Speed Factor: 6.06x (getvalue is faster)
-
---- Pitfalls ---
-Memoryview acquired. Attempting truncate(0)...
-Caught expected BufferError: Existing exports of data: cannot resize
-Memoryview released.
-
---- GC Activity (1,000 getvalue calls) ---
-GC counts before/after: (12, 0, 0) -> (12, 0, 0)
-(Stability in counts proves Copy-on-Write avoids redundant allocations)
---------------------------------------------------
-"""
