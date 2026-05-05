@@ -34,6 +34,8 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v6 # Updated to v6
+        with:
+          submodules: true
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v6 # Updated to v6
@@ -53,6 +55,7 @@ jobs:
 
       - name: Run `pytest` Tests
         if: ${{ fromJson(needs.config.outputs.run_pytest) }}
+        shell: 'bash'
         run: |
           cd sabr
           cp -v sabr_io.py yt_dlp/downloader/sabr/_io.py
