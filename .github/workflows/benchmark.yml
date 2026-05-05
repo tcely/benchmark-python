@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       upgrade_pip: true
-      install_pytest: true
+      install_pytest: false
       run_pytest: true
     steps:
       - run: printf -- '%s\n' 'Nothing to do.'
@@ -52,6 +52,10 @@ jobs:
       - name: Install `pytest`
         if: ${{ fromJson(needs.config.outputs.install_pytest) }}
         run: pip install pytest
+
+      - name: Install test requirements
+        if: ${{ fromJson(needs.config.outputs.run_pytest) }}
+        run: python ./sabr/devscripts/install_deps.py --include-group test --include-extra curl-cffi
 
       - name: Run `pytest` Tests
         if: ${{ fromJson(needs.config.outputs.run_pytest) }}
