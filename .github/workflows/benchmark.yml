@@ -44,7 +44,7 @@ jobs:
         run: python tests.py
 
       - name: Upgrade `pip`
-        if: needs.config.outputs.upgrade_pip
+        if: ${{ 'true' == needs.config.outputs.upgrade_pip }}
         run: python -m pip install --upgrade pip
 
       - name: Install `pytest`
