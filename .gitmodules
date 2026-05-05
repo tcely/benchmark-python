@@ -1,0 +1,4 @@
+[submodule "sabr"]
+	path = sabr
+	url = https://github.com/coletdjnz/yt-dlp-dev.git
+	branch = feat/youtube/sabr
