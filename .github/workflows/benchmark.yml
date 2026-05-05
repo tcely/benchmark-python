@@ -11,6 +11,8 @@ jobs:
       upgrade_pip: true
       install_pytest: false
       run_pytest: false
+    steps:
+      - run: printf -- '%s\n' 'Nothing to do.'
 
   benchmark:
     needs: config
