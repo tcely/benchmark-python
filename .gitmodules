@@ -1,14 +1,13 @@
+[submodule "tcely-patch-3"]
+	path = tcely/patch-3
+	url = https://github.com/tcely/yt-dlp.git
+	branch = patch-3
+
+[submodule "tcely-patch-6"]
+	path = tcely/patch-6
+	url = https://github.com/tcely/yt-dlp.git
+	branch = patch-6
 [submodule "coletdjnz-sabr"]
 	path = sabr
 	url = https://github.com/coletdjnz/yt-dlp-dev.git
 	branch = feat/youtube/sabr
-
-[submodule "tcely-patch-3"]
-    path = tcely/patch-3
-    url = https://github.com/tcely/yt-dlp.git
-    branch = patch-3
-
-[submodule "tcely-patch-6"]
-    path = tcely/patch-6
-    url = https://github.com/tcely/yt-dlp.git
-    branch = patch-6
