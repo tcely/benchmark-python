@@ -8,8 +8,8 @@ jobs:
   config:
     runs-on: ubuntu-latest
     outputs:
-      upgrade_pip: false
-      install_pytest: true
+      upgrade_pip: true
+      install_pytest: false
       run_pytest: false
     steps:
       - run: printf -- '%s\n' 'Nothing to do.'
@@ -48,11 +48,11 @@ jobs:
         run: python -m pip install --upgrade pip
 
       - name: Install `pytest`
-        if: ${{ 'true' == needs.config.outputs.install_pytest }}
+        if: ${{ fromJson(needs.config.outputs.install_pytest) }}
         run: pip install pytest
 
       - name: Run `pytest` Tests
-        if: ${{ 'true' == needs.config.outputs.run_pytest }}
+        if: ${{ fromJson(needs.config.outputs.run_pytest) }}
         run: pytest '-Werror' '--tb=short' '--color=yes' test_sabr_io.py
 
       - name: Run MemoryView Benchmark
