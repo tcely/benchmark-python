@@ -39,7 +39,7 @@ jobs:
           pip install pytest
 
       - name: Run `pytest` Tests
-        run: python test_sabr_io.py
+        run: pytest '-Werror' '--tb=short' '--color=yes' test_sabr_io.py
 
       - name: Run MemoryView Benchmark
         run: python memoryview.py
