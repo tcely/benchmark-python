@@ -9,8 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       upgrade_pip: true
-      install_pytest: false
-      run_pytest: false
+      install_pytest: true
+      run_pytest: true
     steps:
       - run: printf -- '%s\n' 'Nothing to do.'
 
@@ -53,7 +53,11 @@ jobs:
 
       - name: Run `pytest` Tests
         if: ${{ fromJson(needs.config.outputs.run_pytest) }}
-        run: pytest '-Werror' '--tb=short' '--color=yes' test_sabr_io.py
+        run: |
+          cd sabr
+          cp -v sabr_io.py yt_dlp/downloader/sabr/_io.py
+          pytest '-Werror' '--tb=short' '--color=yes' \
+              test/test_sabr/test_downloader/test_io.py
 
       - name: Run MemoryView Benchmark
         run: python memoryview.py
