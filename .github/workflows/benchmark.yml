@@ -28,7 +28,9 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Run Unit Tests
-        run: env ONLY_GETVALUE=True python tests.py
+        run: |
+          env ONLY_GETVALUE=True python tests.py
+          env ONLY_GETVALUE=True python test_sabr_io.py
 
       - name: Run MemoryView Benchmark
         run: python memoryview.py
