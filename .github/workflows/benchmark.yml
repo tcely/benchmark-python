@@ -5,7 +5,15 @@ env:
   ONLY_GETVALUE: 'True'
 
 jobs:
+  config:
+    runs-on: ubuntu-latest
+    outputs:
+      upgrade_pip: true
+      install_pytest: false
+      run_pytest: false
+
   benchmark:
+    needs: config
     runs-on: windows-latest
     strategy:
       matrix:
@@ -33,12 +41,18 @@ jobs:
       - name: Run Unit Tests
         run: python tests.py
 
+      - name: Upgrade `pip`
+        if: ${{ needs.config.outputs.upgrade_pip }}
+        run: python -m pip install --upgrade pip
+
       - name: Install `pytest`
+        if: ${{ needs.config.outputs.install_pytest }}
         run: |
           python -m pip install --upgrade pip
           pip install pytest
 
       - name: Run `pytest` Tests
+        if: ${{ needs.config.outputs.run_pytest }}
         run: pytest '-Werror' '--tb=short' '--color=yes' test_sabr_io.py
 
       - name: Run MemoryView Benchmark
