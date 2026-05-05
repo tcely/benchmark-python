@@ -61,7 +61,7 @@ jobs:
         if: ${{ fromJson(needs.config.outputs.run_pytest) }}
         shell: 'bash'
         run: |
-          cd sabr
+          cd tcely/patch-3
           cp -v ../sabr_io.py yt_dlp/downloader/sabr/_io.py
           pytest '-Werror' '--tb=short' '--color=yes' \
               test/test_sabr/test_downloader/test_io.py
