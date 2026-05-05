@@ -174,3 +174,4 @@ class MemoryFormatIOBackend(FormatIOBackend):
 
     def exists(self):
         return len(self) > 0
+
