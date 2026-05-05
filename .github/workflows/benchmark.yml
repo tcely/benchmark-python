@@ -64,7 +64,7 @@ jobs:
           cd tcely/patch-3
           cp -v ../../sabr_io.py yt_dlp/downloader/sabr/_io.py
           pytest '-Werror' '--tb=short' '--color=yes' \
-              test/test_sabr/test_downloader/test_io.py
+              test/test_sabr/test_downloader/test_{io,file}.py
 
       - name: Run MemoryView Benchmark
         run: python memoryview.py
