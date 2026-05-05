@@ -62,7 +62,7 @@ jobs:
         shell: 'bash'
         run: |
           cd tcely/patch-3
-          cp -v ../sabr_io.py yt_dlp/downloader/sabr/_io.py
+          cp -v ../../sabr_io.py yt_dlp/downloader/sabr/_io.py
           pytest '-Werror' '--tb=short' '--color=yes' \
               test/test_sabr/test_downloader/test_io.py
 
