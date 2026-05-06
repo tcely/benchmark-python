@@ -21,7 +21,7 @@ class SynchronizedBytesIO(io.BytesIO):
         if self._thread_lock is None:
             with self._init_lock:
                 if self._thread_lock is None:
-                    # RLock is used to allow nested 'with' calls on the same thread
+                    # RLock allows nested 'with' calls on the same thread
                     self._thread_lock = threading.RLock()
         return self._thread_lock
 
